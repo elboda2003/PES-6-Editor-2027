@@ -2,23 +2,20 @@
 
 A beginner-friendly project targeting Windows 7 (32-bit) and Python 3.8.10 (32-bit).
 
-## Current milestone: read-only AFS archive inspection
+## Current milestone: read-only archive and file inspection
 
-This milestone adds a safe AFS archive inspector. The application can detect AFS files, validate the archive header, count entries, and inspect metadata such as entry index, offset, size, and status without extracting archive contents.
+The desktop application provides a safe, read-only inspection workflow:
 
-The inspector performs boundary validation and flags malformed or corrupted archives without modifying them. It does not extract files, overwrite data, or rewrite archive structure. The implementation deliberately avoids reading the full archive into memory and only reads the header, entry table, and validated metadata needed for inspection.
+- Browse a PES 6 data folder in a tree view.
+- Show file details such as name, extension, size, full path, and last modified date.
+- Preview the first 256 bytes in hexadecimal.
+- Show a text preview only for files that are conservatively recognized as text.
+- Inspect `.afs` archives without extracting or modifying their contents.
+- Never execute, rename, move, delete, or edit files.
 
-## AFS archive features
+This project is a tool for investigation and analysis, not a file-writer or game mod installer.
 
-- Detects AFS archive files by magic signature
-- Reads and validates the AFS header
-- Checks entry table size and bounds
-- Reports entry index, offset, size, and validity status
-- Handles malformed or truncated archives safely
-- Keeps all operations read-only
-- Shows archive metadata in the GUI when an `.afs` file is selected
-
-## Run the application
+## Run the source version
 
 1. Install Python 3.8.10 **32-bit (x86)** on Windows and include Tcl/Tk during installation.
 2. Open Command Prompt in the repository folder.
@@ -28,9 +25,37 @@ The inspector performs boundary validation and flags malformed or corrupted arch
    set PYTHONPATH=src
    python -m pes6_editor.app
    ```
-4. Select a folder containing `.afs` files.
-5. Click an AFS archive in the tree to inspect it.
-6. Use the AFS inspector panel to review archive metadata and entry validation.
+
+4. Select a folder containing game files or archives.
+5. Use the tree, details panel, preview panel, and AFS inspector.
+
+## Build the Windows executable
+
+The repository includes `build_windows.bat`, which is intended to produce a standalone executable named `PES6Editor2027.exe`.
+
+Requirements:
+
+- Windows machine or Windows environment
+- Python 3.8.10 32-bit
+- PyInstaller 4.10
+
+Run:
+
+```bat
+build_windows.bat
+```
+
+Expected target output:
+
+```text
+dist\PES6Editor2027.exe
+```
+
+The build is designed to place the executable in the standard PyInstaller output folder, but the script checks for a previous output before attempting to build. It does not overwrite an existing executable.
+
+## Important compatibility notice
+
+A successful build does not guarantee Windows 7 compatibility. The application must be tested on Windows 7 32-bit before any claim is made that it works there. A modern Windows environment can build the application even though it may still fail on Windows 7 due to dependency, runtime, or API differences.
 
 ## Run tests
 
@@ -41,23 +66,9 @@ set PYTHONPATH=src
 python -m unittest discover -s tests -v
 ```
 
-This includes the AFS synthetic-file tests and the earlier metadata tests.
-
-## Windows 7 32-bit packaging
-
-PyInstaller remains optional and build-time only. Build with Python 3.8.10 32-bit and PyInstaller 4.10:
-
-```bat
-python -m pip install PyInstaller==4.10
-set PYTHONPATH=src
-python -m PyInstaller --clean --windowed --name PES6Editor2027 --paths src src\pes6_editor\app.py
-```
-
-Test the packaged app on a clean Windows 7 32-bit machine or virtual machine before distributing it. A successful build on newer Windows versions does not guarantee Windows 7 compatibility.
-
 ## Safety rules
 
 - Never execute `.afs` or `.exe` files.
-- Never extract archive contents.
-- Never modify, rename, move, or overwrite files.
-- Only read metadata and verified header/table bounds.
+- Never modify, rename, move, or delete game data files.
+- Keep all current features inspection-only.
+- Do not rely on packaged output until it has been tested on a clean Windows 7 32-bit machine.
