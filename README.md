@@ -4,21 +4,18 @@ A beginner-friendly project targeting Windows 7 (32-bit) and Python 3.8.10 (32-b
 
 ## Phase 1 application status
 
-The proposed phase-one application shell provides a Dashboard and navigation
-for the tools that are actually available:
+The phase-one application shell provides a Dashboard and navigation for the tools that are currently available:
 
-- **File Browser**, including File Details and Preview & Binary.
-- **AFS Inspector**, limited to recognizing the `AFS\0` signature and reporting
-  file size until an entry layout is verified.
-- **Settings**, with compatibility and safety information.
+- **Dashboard** — reports the actual status of the available tools and unimplemented sections.
+- **File Browser** — browses a selected PES 6 data folder and provides File Details and Preview & Binary.
+- **AFS Inspector** — checks the AFS signature and file size only; it does not analyze entries.
+- **Settings** — displays compatibility and safety information.
 
-Players, Teams, Transfers, Competitions, Stadiums, and Graphics are not
-implemented for editing. They must be shown as unavailable, not as functional
-editors.
+Players, Teams, Transfers, Competitions, Stadiums, and Graphics are not implemented for editing. These sections are unavailable, not functional editors.
 
-The proposed `pes6_editor.core.file_safety` utilities create separate backup,
-working, or restored copies. They do not overwrite existing destinations or
-modify the source. They do not enable game-file editing.
+### File Safety
+
+The `pes6_editor.core.file_safety` utilities create separate backup, working, or restored copies. They do not overwrite existing destinations or modify the source file. These utilities do not enable game-file editing.
 
 ## Current milestone: read-only archive and file inspection
 
@@ -28,10 +25,10 @@ The desktop application provides a safe, read-only inspection workflow:
 - Show file details such as name, extension, size, full path, and last modified date.
 - Preview the first 256 bytes in hexadecimal.
 - Show a text preview only for files conservatively recognized as text.
-- Open an AFS archive in a separate inspector window to review its header and entry metadata.
+- AFS Inspector checks the archive signature and file size only; it does not analyze entries.
 - Never execute, extract, rename, move, delete, or edit game files.
 
-To inspect an AFS file, click **Open AFS...** and choose the archive. The inspector checks the AFS signature and reports the file size. Entry information is not parsed because the supported entry layout is unverified. This action only reads the archive; it does not extract or modify contents.
+To inspect an AFS file, click **Open AFS...** and choose the archive. The inspector checks its signature and reports its file size; it does not extract contents or modify the archive.
 
 ## Run the source version
 
@@ -78,7 +75,7 @@ set PYTHONPATH=src
 python -m unittest discover -s tests -v
 ```
 
-The tests exercise the AFS parser and GUI-launch wiring with mocks; they do not require a live interactive GUI.
+The tests cover AFS signature inspection and GUI-launch wiring with mocks; they do not require a live interactive GUI.
 
 ## Safety rules
 
