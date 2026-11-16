@@ -1,3 +1,38 @@
+# Current phase status
+
+This section describes the proposed phase-one application. Where older
+milestone notes below disagree with it, use this current status.
+
+## Requirements
+
+- Python 3.8.10, 32-bit (x86), with Tcl/Tk.
+- Windows 7 32-bit is the compatibility target. Compatibility is not verified
+  until the application is run on Windows 7.
+
+## Start the application
+
+From the repository root in Command Prompt:
+
+```bat
+set PYTHONPATH=src
+python -m pes6_editor.app
+```
+
+The compatibility entry point is also intended to start the same application:
+
+```bat
+set PYTHONPATH=src
+python -m pes6_editor.main
+```
+
+The proposed main window includes Dashboard, File Browser, AFS Inspector, and
+Settings. File Browser retains File Details and Preview & Binary. Players,
+Teams, Transfers, Competitions, Stadiums, and Graphics are unavailable for
+editing because those editors are not implemented.
+
+AFS inspection is limited to signature recognition and file size. The entry
+layout is unverified; the app must not guess entry counts, offsets, or sizes.
+
 # Getting started: PES 6 Editor 2027 first milestone
 
 This milestone is a **read-only folder inspector**. It lets you choose a PES 6 game-data folder and browse its folders and files. It displays each item's name, extension, size, and full path. The program does not open file contents or write to the selected game folder.
