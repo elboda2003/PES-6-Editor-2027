@@ -2,6 +2,24 @@
 
 A beginner-friendly project targeting Windows 7 (32-bit) and Python 3.8.10 (32-bit).
 
+## Phase 1 application status
+
+The proposed phase-one application shell provides a Dashboard and navigation
+for the tools that are actually available:
+
+- **File Browser**, including File Details and Preview & Binary.
+- **AFS Inspector**, limited to recognizing the `AFS\0` signature and reporting
+  file size until an entry layout is verified.
+- **Settings**, with compatibility and safety information.
+
+Players, Teams, Transfers, Competitions, Stadiums, and Graphics are not
+implemented for editing. They must be shown as unavailable, not as functional
+editors.
+
+The proposed `pes6_editor.core.file_safety` utilities create separate backup,
+working, or restored copies. They do not overwrite existing destinations or
+modify the source. They do not enable game-file editing.
+
 ## Current milestone: read-only archive and file inspection
 
 The desktop application provides a safe, read-only inspection workflow:
@@ -13,7 +31,7 @@ The desktop application provides a safe, read-only inspection workflow:
 - Open an AFS archive in a separate inspector window to review its header and entry metadata.
 - Never execute, extract, rename, move, delete, or edit game files.
 
-To inspect an AFS file, click **Open AFS...** and choose the archive. The inspector checks the AFS signature and displays the parsed entry information. This action only reads the archive; it does not extract or modify contents.
+To inspect an AFS file, click **Open AFS...** and choose the archive. The inspector checks the AFS signature and reports the file size. Entry information is not parsed because the supported entry layout is unverified. This action only reads the archive; it does not extract or modify contents.
 
 ## Run the source version
 

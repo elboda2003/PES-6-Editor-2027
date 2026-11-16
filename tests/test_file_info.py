@@ -50,6 +50,11 @@ class FileInfoTests(unittest.TestCase):
             datetime.fromtimestamp(expected_time).strftime("%Y-%m-%d %H:%M:%S"),
         )
 
+    def test_file_details_reject_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ValueError):
+                get_file_details(directory)
+
 
 class FilePreviewTests(unittest.TestCase):
     def _make_file(self, folder, name, data):

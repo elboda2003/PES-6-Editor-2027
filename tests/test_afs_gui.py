@@ -12,10 +12,21 @@ class AFSInspectorLauncherTests(unittest.TestCase):
         with tempfile.NamedTemporaryFile(suffix=".afs") as archive:
             window = mock.Mock()
             panel = mock.Mock()
-            with mock.patch.object(afs_inspector.tk, "Toplevel", return_value=window) as toplevel:
+            with mock.patch.object(
+                afs_inspector.tk,
+                "Toplevel",
+                return_value=window,
+            ) as toplevel:
                 with mock.patch.object(afs_inspector, "detect_afs", return_value=True):
-                    with mock.patch.object(afs_inspector, "AFSInspectorPanel", return_value=panel):
-                        result = afs_inspector.open_afs_inspector(archive.name, mock.Mock())
+                    with mock.patch.object(
+                        afs_inspector,
+                        "AFSInspectorPanel",
+                        return_value=panel,
+                    ):
+                        result = afs_inspector.open_afs_inspector(
+                            archive.name,
+                            mock.Mock(),
+                        )
 
         self.assertIs(result, window)
         toplevel.assert_called_once()
@@ -26,8 +37,30 @@ class AFSInspectorLauncherTests(unittest.TestCase):
         with tempfile.NamedTemporaryFile(suffix=".afs") as archive:
             with mock.patch.object(afs_inspector, "detect_afs", return_value=False):
                 with mock.patch.object(afs_inspector.tk, "Toplevel") as toplevel:
-                    with mock.patch.object(afs_inspector.messagebox, "showerror") as showerror:
-                        result = afs_inspector.open_afs_inspector(archive.name, mock.Mock())
+                    with mock.patch.object(
+                        afs_inspector.messagebox,
+                        "showerror",
+                    ) as showerror:
+                        result = afs_inspector.open_afs_inspector(
+                            archive.name,
+                            mock.Mock(),
+                        )
+
+        self.assertIsNone(result)
+        toplevel.assert_not_called()
+        showerror.assert_called_once()
+
+    def test_directory_is_rejected_without_opening_window(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with mock.patch.object(afs_inspector.tk, "Toplevel") as toplevel:
+                with mock.patch.object(
+                    afs_inspector.messagebox,
+                    "showerror",
+                ) as showerror:
+                    result = afs_inspector.open_afs_inspector(
+                        directory,
+                        mock.Mock(),
+                    )
 
         self.assertIsNone(result)
         toplevel.assert_not_called()
