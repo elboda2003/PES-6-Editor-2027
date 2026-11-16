@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from pes6_editor.core.file_info import format_size, get_extension, get_file_details
+from pes6_editor.gui.afs_inspector import open_afs_inspector
 from pes6_editor.gui.file_preview_panel import FilePreviewPanel
 
 
@@ -26,6 +27,11 @@ class FolderBrowser(ttk.Frame):
             toolbar, text="Select PES 6 Data Folder...", command=self.select_folder
         )
         self.select_button.pack(side=tk.LEFT)
+
+        self.open_afs_button = ttk.Button(
+            toolbar, text="Open AFS...", command=self.open_afs_file
+        )
+        self.open_afs_button.pack(side=tk.LEFT, padx=(8, 0))
 
         self.refresh_button = ttk.Button(
             toolbar, text="Refresh", command=self.refresh, state=tk.DISABLED
@@ -131,6 +137,15 @@ class FolderBrowser(ttk.Frame):
             self._detail_values[key].set(value)
         self.preview_panel.show_file(path)
         self.status.configure(text="Selected file (read-only): {}".format(details["path"]))
+
+    def open_afs_file(self):
+        """Choose an archive and open its read-only inspector in a new window."""
+        selected = filedialog.askopenfilename(
+            title="Open AFS archive for read-only inspection",
+            filetypes=(("AFS archives", "*.afs"), ("All files", "*.*")),
+        )
+        if selected:
+            open_afs_inspector(selected, self)
 
     def select_folder(self):
         """Ask the user to select a folder; do not write to it."""
