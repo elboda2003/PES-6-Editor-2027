@@ -5,10 +5,11 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from pes6_editor.core.file_info import format_size, get_extension, get_file_details
+from pes6_editor.gui.file_preview_panel import FilePreviewPanel
 
 
 class FolderBrowser(ttk.Frame):
-    """Show a selected folder's tree and read-only file metadata."""
+    """Show a selected folder's tree and read-only file metadata/previews."""
 
     def __init__(self, master):
         ttk.Frame.__init__(self, master, padding=10)
@@ -33,7 +34,7 @@ class FolderBrowser(ttk.Frame):
 
         ttk.Label(
             self,
-            text="Read-only inspection: this tool lists names and metadata; it does not edit game files.",
+            text="Read-only inspection: files are never changed or executed; previews read at most 256 bytes.",
         ).pack(anchor=tk.W, pady=(0, 8))
 
         content = ttk.Panedwindow(self, orient=tk.HORIZONTAL)
@@ -75,9 +76,13 @@ class FolderBrowser(ttk.Frame):
         table_frame.columnconfigure(0, weight=1)
         content.add(table_frame, weight=3)
 
-        details_frame = ttk.LabelFrame(content, text="File Details", padding=10)
+        side_panel = ttk.Notebook(content)
+        details_frame = ttk.Frame(side_panel, padding=10)
         self._build_details_panel(details_frame)
-        content.add(details_frame, weight=1)
+        side_panel.add(details_frame, text="File Details")
+        self.preview_panel = FilePreviewPanel(side_panel)
+        side_panel.add(self.preview_panel, text="Preview & Binary")
+        content.add(side_panel, weight=2)
 
         self.tree.bind("<<TreeviewOpen>>", self._on_tree_open)
         self.tree.bind("<<TreeviewSelect>>", self._on_tree_select)
@@ -118,11 +123,13 @@ class FolderBrowser(ttk.Frame):
             details = get_file_details(path)
         except (OSError, ValueError) as error:
             self._clear_details("File details unavailable: {}".format(error))
+            self.preview_panel.clear("Preview unavailable for this selection.")
             self.status.configure(text="Cannot inspect file: {}".format(path))
             return
 
         for key, value in details.items():
             self._detail_values[key].set(value)
+        self.preview_panel.show_file(path)
         self.status.configure(text="Selected file (read-only): {}".format(details["path"]))
 
     def select_folder(self):
@@ -152,6 +159,7 @@ class FolderBrowser(ttk.Frame):
         self.tree.insert(root_id, tk.END, text="Expand to list contents", tags=("placeholder",))
         self.refresh_button.configure(state=tk.NORMAL)
         self._clear_details("Select a file in the tree.")
+        self.preview_panel.clear("Select a file to inspect.")
         self.status.configure(text="Selected folder: {}".format(self._root_path))
         self.tree.focus(root_id)
         self.tree.selection_set(root_id)
@@ -248,4 +256,5 @@ class FolderBrowser(ttk.Frame):
             self._show_file_details(path)
         elif "directory" in tags:
             self._clear_details("Select a file in the tree.")
+            self.preview_panel.clear("Select a file to inspect.")
             self.status.configure(text="Selected folder: {}".format(path))

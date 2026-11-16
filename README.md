@@ -2,11 +2,13 @@
 
 A beginner-friendly project targeting Windows 7 (32-bit) and Python 3.8.10 (32-bit).
 
-## Current milestone: read-only folder inspector
+## Current milestone: read-only folder and file inspector
 
-The desktop application lets you select a PES 6 game-data folder, browse its folders and files in a tree, and view metadata for a selected file. The **File Details** panel shows the file name, extension, size, full path, and last modified date and time.
+Select a PES 6 game-data folder and browse its folders and files in a tree. The **File Details** panel shows the selected file's name, extension, size, full path, and last modified date and time. The separate **Preview & Binary** panel shows the file format classification, total size, and a hexadecimal view of the first 256 bytes.
 
-This milestone is strictly read-only. It lists directory entries and obtains filesystem metadata; it does not open file contents or modify, rename, move, or delete game files. It does not yet edit PES 6 data.
+A text preview is displayed only when the sample passes a conservative text check. Known binary-oriented extensions (`.afs`, `.bin`, `.dat`, `.img`, `.exe`) are classified by extension and are not given a text preview. These extension labels are informative only; the app does not parse the actual PES 6 container formats. Executable files are never run.
+
+This milestone is strictly read-only. The preview code opens files in binary read-only mode and reads at most 256 bytes; it does not load large files into memory, modify, rename, move, or delete files, or extract archive contents. No editing, filtering, or extraction features are included.
 
 ## Run the application
 
@@ -20,7 +22,7 @@ This milestone is strictly read-only. It lists directory entries and obtains fil
    ```
 
 4. Click **Select PES 6 Data Folder...** and choose the game-data folder.
-5. Expand folders in the tree. Click a file to see its details in the panel.
+5. Expand folders in the tree. Click a file to see its details and preview. Select **Preview & Binary** to view the hex/text sections.
 
 The GUI uses Python's built-in Tkinter, so no third-party runtime dependency is needed.
 
@@ -33,7 +35,7 @@ set PYTHONPATH=src
 python -m unittest discover -s tests -v
 ```
 
-The tests cover the read-only metadata helpers. For a manual GUI check, choose a test folder and verify that the displayed metadata is accurate and the files remain unchanged.
+Tests cover metadata, extension classification, bounded sample reads, hexadecimal rendering, and conservative text detection. For a manual GUI check, select a text file and a binary PES-related file, confirm the preview changes appropriately, then verify the source files remain unchanged.
 
 ## Windows 7 32-bit packaging
 
